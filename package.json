@@ -1,0 +1,12 @@
+{
+  "name": "hsreplaynet-dev-proxy",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:HearthSim/hsreplaynet-dev-proxy.git",
+  "author": "Benedict Etzel <benedict@hearthsim.net>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "http-proxy": "^1.18.0"
+  }
+}
