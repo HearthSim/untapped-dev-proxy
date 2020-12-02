@@ -7,6 +7,10 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "http-proxy": "^1.18.0"
+    "http-proxy": "^1.18.0",
+    "yargs": "^16.1.0"
+  },
+  "scripts": {
+    "dev": "node index.js proxy"
   }
 }
