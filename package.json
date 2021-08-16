@@ -11,6 +11,6 @@
     "yargs": "^16.1.0"
   },
   "scripts": {
-    "dev": "node index.js proxy"
+    "proxy": "node index.js proxy"
   }
 }
