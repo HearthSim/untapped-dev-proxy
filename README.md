@@ -11,5 +11,5 @@ $ yarn install
 ## Usage
 
 ```
-$ yarn run --sessionid abc123abc123abc123 -p 8080
+$ yarn dev abc123abc123abc123 -p 8080
 ```
