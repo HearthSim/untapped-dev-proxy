@@ -27,7 +27,8 @@ function proxy(opts) {
 			},
 			changeOrigin: true,
 			headers: {
-				Cookie: `sessionid=${sessionId}` //,free-mode=1`
+				Cookie: `sessionid=${sessionId}`,
+				Referer: 'https://hsreplay.net/',
 			}
 		})
 		.listen(8080);
