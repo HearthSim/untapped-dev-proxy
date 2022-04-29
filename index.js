@@ -18,7 +18,6 @@ yargs(hideBin(process.argv)).command(
 		yargs.option("service", {
 			alias: "s",
 			describe: "Untapped.gg service to proxy",
-			choices: ["mtga", "accounts", "sbb"],
 			default: "mtga",
 		});
 	},
