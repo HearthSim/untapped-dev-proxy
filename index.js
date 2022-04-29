@@ -29,11 +29,13 @@ yargs(hideBin(process.argv)).command(
 
 function proxy(opts) {
 	const { sessionId, service, port } = opts;
+	const protocol = "https:";
+	const target = `api.${service}.untapped.gg`;
 	const server = httpProxy
 		.createProxyServer({
 			target: {
-				protocol: "https:",
-				host: `api.${service}.untapped.gg`,
+				protocol: protocol,
+				host: target,
 				port: 443
 			},
 			changeOrigin: true,
@@ -43,6 +45,7 @@ function proxy(opts) {
 			}
 		})
 		.listen(port);
+	console.log(`[\u2713] Proxying http://localhost:${port}/ to ${protocol}//${target}/`);
 	server.on("error", (e) => {
 		console.error(e);
 	});
