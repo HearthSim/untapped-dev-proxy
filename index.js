@@ -39,11 +39,32 @@ function proxy(opts) {
 			},
 			changeOrigin: true,
 			headers: {
-				Cookie: `sessionid=${sessionId}`,
+				Cookie: sessionId ? `sessionid=${sessionId}` : "",
 				Referer: `https://${service}.untapped.gg/`,
 			}
 		})
 		.listen(port);
+
+
+	var enableCors = function(req, res) {
+		if (req.headers['access-control-request-method']) {
+			res.setHeader('access-control-allow-methods', req.headers['access-control-request-method']);
+		}
+
+		if (req.headers['access-control-request-headers']) {
+			res.setHeader('access-control-allow-headers', req.headers['access-control-request-headers']);
+		}
+
+		if (req.headers.origin) {
+			res.setHeader('access-control-allow-origin', req.headers.origin);
+			res.setHeader('access-control-allow-credentials', 'true');
+		}
+	};
+
+	// set header for CORS
+	server.on("proxyRes", function(proxyRes, req, res) {
+		enableCors(req, res);
+	});
 	console.log(`[\u2713] Proxying http://localhost:${port}/ to ${protocol}//${target}/`);
 	server.on("error", (e) => {
 		console.error(e);
