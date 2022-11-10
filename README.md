@@ -10,6 +10,12 @@ $ yarn install
 
 ## Usage
 
+Anonymous:
+```
+$ yarn proxy --service mtga -p 8080
+```
+
+Authenticated with session cookie:
 ```
 $ yarn proxy abc123abc123abc123 --service mtga -p 8080
 ```
