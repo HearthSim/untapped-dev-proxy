@@ -3,12 +3,12 @@ const { hideBin } = require("yargs/helpers");
 const httpProxy = require("http-proxy");
 
 yargs(hideBin(process.argv)).command(
-	"proxy <sessionid>",
+	"proxy [sessionid]",
 	"start the server",
 	yargs => {
 		yargs.positional("sessionid", {
 			describe: "sessionid from an Untapped.gg cookie",
-			type: "string"
+			type: "string",
 		});
 		yargs.option("port", {
 			describe: "port to listen on",
