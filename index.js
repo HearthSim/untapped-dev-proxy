@@ -20,20 +20,34 @@ yargs(hideBin(process.argv)).command(
 			describe: "Untapped.gg service to proxy",
 			default: "mtga",
 		});
+		yargs.option("csrftoken", {
+			alias: "csrf",
+			describe: "CSRF token from an Untapped.gg cookie",
+			default: undefined,
+		});
 	},
 	(argv) => {
 		proxy({
 			sessionId: argv.sessionid,
 			port: argv.port,
 			service: argv.service,
+			csrf: argv.csrftoken,
 		});
 	}
 ).argv;
 
 function proxy(opts) {
-	const { sessionId, service, port } = opts;
+	const { sessionId, service, port, csrf } = opts;
 	const protocol = "https:";
 	const target = `api.${service}.untapped.gg`;
+	const headers = {
+		Cookie: sessionId ? `sessionid=${sessionId}` : "",
+		Referer: `https://${service}.untapped.gg/`,
+	};
+	if (csrf) {
+		headers["X-CsrfToken"] = csrf;
+		headers.Cookie += `; csrftoken=${csrf}`;
+	}
 	const server = httpProxy
 		.createProxyServer({
 			target: {
@@ -42,10 +56,7 @@ function proxy(opts) {
 				port: 443,
 			},
 			changeOrigin: true,
-			headers: {
-				Cookie: sessionId ? `sessionid=${sessionId}` : "",
-				Referer: `https://${service}.untapped.gg/`,
-			},
+			headers,
 		})
 		.listen(port);
 
