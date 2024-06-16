@@ -39,7 +39,7 @@ yargs(hideBin(process.argv)).command(
 function proxy(opts) {
 	const { sessionId, service, port, csrf } = opts;
 	const protocol = "https:";
-	const target = `api.${service}.untapped.gg`;
+	const target = service.includes(".") ? service : `api.${service}.untapped.gg`;
 	const headers = {
 		Cookie: sessionId ? `sessionid=${sessionId}` : "",
 		Referer: `https://${service}.untapped.gg/`,
