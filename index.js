@@ -81,10 +81,24 @@ function proxy(opts) {
 		}
 	};
 
-	// set header for CORS
+	server.on("proxyReq", function(proxyReq, req) {
+		// Origin must be set to allowed origion for csrf
+		if(["POST", "PUT", "DELETE"].includes(req.method)) {
+			proxyReq.setHeader("origin", `https://${service}.untapped.gg`);
+		}
+	})
+
 	server.on("proxyRes", function (proxyRes, req, res) {
+		if(["POST", "PUT", "DELETE"].includes(req.method)) {
+			// remove csrf origin info we set above, for cors
+			delete proxyRes.headers["access-control-allow-origin"];
+			delete proxyRes.headers["access-control-allow-credentials"];
+		}
+
+		// set header for CORS
 		enableCors(req, res);
 	});
+
 	console.log(
 		`[\u2713] Proxying http://localhost:${port}/ to ${protocol}//${target}/`
 	);
