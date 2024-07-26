@@ -33,7 +33,7 @@ yargs(hideBin(process.argv)).command(
 			service: argv.service,
 			csrf: argv.csrftoken,
 		});
-	}
+	},
 ).argv;
 
 function proxy(opts) {
@@ -64,14 +64,14 @@ function proxy(opts) {
 		if (req.headers["access-control-request-method"]) {
 			res.setHeader(
 				"access-control-allow-methods",
-				req.headers["access-control-request-method"]
+				req.headers["access-control-request-method"],
 			);
 		}
 
 		if (req.headers["access-control-request-headers"]) {
 			res.setHeader(
 				"access-control-allow-headers",
-				req.headers["access-control-request-headers"]
+				req.headers["access-control-request-headers"],
 			);
 		}
 
@@ -81,15 +81,15 @@ function proxy(opts) {
 		}
 	};
 
-	server.on("proxyReq", function(proxyReq, req) {
+	server.on("proxyReq", function (proxyReq, req) {
 		// Origin must be set to allowed origion for csrf
-		if(["POST", "PUT", "DELETE"].includes(req.method)) {
+		if (["POST", "PATCH", "PUT", "DELETE"].includes(req.method)) {
 			proxyReq.setHeader("origin", `https://${service}.untapped.gg`);
 		}
-	})
+	});
 
 	server.on("proxyRes", function (proxyRes, req, res) {
-		if(["POST", "PUT", "DELETE"].includes(req.method)) {
+		if (["POST", "PATCH", "PUT", "DELETE"].includes(req.method)) {
 			// remove csrf origin info we set above, for cors
 			delete proxyRes.headers["access-control-allow-origin"];
 			delete proxyRes.headers["access-control-allow-credentials"];
@@ -100,7 +100,7 @@ function proxy(opts) {
 	});
 
 	console.log(
-		`[\u2713] Proxying http://localhost:${port}/ to ${protocol}//${target}/`
+		`[\u2713] Proxying http://localhost:${port}/ to ${protocol}//${target}/`,
 	);
 	server.on("error", (e) => {
 		console.error(e);
