@@ -11,6 +11,7 @@ yargs(hideBin(process.argv)).command(
 			type: "string",
 		});
 		yargs.option("port", {
+			alias: "p",
 			describe: "port to listen on",
 			type: "number",
 			default: 8080,
