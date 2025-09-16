@@ -96,6 +96,17 @@ function proxy(opts) {
 			delete proxyRes.headers["access-control-allow-credentials"];
 		}
 
+		const setCookie = proxyRes.headers["set-cookie"];
+		if (Array.isArray(setCookie)) {
+			proxyRes.headers["set-cookie"] = setCookie.map((cookieStr) => {
+				// Removing secure and domain attributes allows cookies to be set on localhost
+				// This includes e.g., the csrftoken
+			return cookieStr
+				.replace(/;\s*Secure\b/gi, "")
+				.replace(/;\s*Domain=[^;]*/gi, "");
+		});
+		}
+
 		// set header for CORS
 		enableCors(req, res);
 	});
