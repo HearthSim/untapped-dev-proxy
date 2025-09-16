@@ -41,14 +41,6 @@ function proxy(opts) {
 	const { sessionId, service, port, csrf } = opts;
 	const protocol = "https:";
 	const target = service.includes(".") ? service : `api.${service}.untapped.gg`;
-	const headers = {
-		Cookie: sessionId ? `sessionid=${sessionId}` : "",
-		Referer: `https://${service}.untapped.gg/`,
-	};
-	if (csrf) {
-		headers["X-CsrfToken"] = csrf;
-		headers.Cookie += `; csrftoken=${csrf}`;
-	}
 	const server = httpProxy
 		.createProxyServer({
 			target: {
@@ -57,7 +49,6 @@ function proxy(opts) {
 				port: 443,
 			},
 			changeOrigin: true,
-			headers,
 		})
 		.listen(port);
 
@@ -82,10 +73,40 @@ function proxy(opts) {
 		}
 	};
 
-	server.on("proxyReq", function (proxyReq, req) {
-		// Origin must be set to allowed origion for csrf
+ server.on("proxyReq", function (proxyReq, req) {
+		proxyReq.setHeader("referer", `https://${service}.untapped.gg/`);
+
+		if(csrf) {
+			proxyReq.setHeader("x-CsrfToken", csrf);
+		}
+
 		if (["POST", "PATCH", "PUT", "DELETE"].includes(req.method)) {
 			proxyReq.setHeader("origin", `https://${service}.untapped.gg`);
+		}
+
+		const reqCookies = (req.headers["cookie"] ?? "")
+			.split(";")
+			.map((s) => s.trim())
+			.filter(Boolean);
+
+		const writeCookie = (name, value) => {
+			const idx = reqCookies.findIndex(x => x.startsWith(`${name}=`));
+			if (idx !== -1) {
+				reqCookies.splice(idx, 1);
+			}
+			reqCookies.push(`${name}=${value}`);
+		}
+
+		if (sessionId) {
+			writeCookie("sessionid", sessionId);
+		}
+
+		if(csrf) {
+			writeCookie("csrftoken", csrf);
+		}
+
+		if (reqCookies.length) {
+			proxyReq.setHeader("cookie", reqCookies.join("; "));
 		}
 	});
 
