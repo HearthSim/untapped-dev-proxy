@@ -130,6 +130,13 @@ function proxy(opts) {
 
 		// set header for CORS
 		enableCors(req, res);
+
+		// Set session cookie so that it is available for requests from payload
+		if (req.url === "/api/v1/account" && req.headers.origin === "http://localhost:3000" && res.statusCode === 200) {
+			if(!proxyRes.headers["set-cookie"]) {
+				proxyRes.headers["set-cookie"] = [`sessionid=${sessionId}; Path=/; HttpOnly; Secure`];
+			}
+		}
 	});
 
 	console.log(
