@@ -1,3 +1,4 @@
+const https = require("https");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 const httpProxy = require("http-proxy");
@@ -49,6 +50,7 @@ function proxy(opts) {
 				port: 443,
 			},
 			changeOrigin: true,
+			agent: new https.Agent({ keepAlive: true }),
 		})
 		.listen(port);
 
