@@ -133,8 +133,9 @@ function proxy(opts) {
 		// set header for CORS
 		enableCors(req, res);
 
-		// Set session cookie so that it is available for requests from payload
-		if (req.url === "/api/v1/account" && req.headers.origin === "http://localhost:3000" && res.statusCode === 200) {
+		// Set session cookie so that it is available for requests from payload. Any localhost port, because a
+		// frontend can run several dev servers side by side (3000, 3001, ...), each with its own proxy.
+		if (req.url === "/api/v1/account" && /^http:\/\/localhost:\d+$/.test(req.headers.origin ?? "") && res.statusCode === 200) {
 			if(!proxyRes.headers["set-cookie"]) {
 				proxyRes.headers["set-cookie"] = [`sessionid=${sessionId}; Path=/; HttpOnly; Secure`];
 			}
